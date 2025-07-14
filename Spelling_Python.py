@@ -15,15 +15,15 @@ def play_sound(filename):
 with open('dictionary.json', 'r') as file:
     my_dict = json.load(file)
 
-def generate_speech_files(word, defenition):
+def generate_speech_files(word, definition):
     pygame.mixer.music.stop()
     pygame.mixer.music.unload()
 
     wordSound = gTTS(word, lang='en', tld='com')
     wordSound.save('WordSound.mp3')
 
-    defenitionSound = gTTS(defenition, lang='en', tld='com')
-    defenitionSound.save('DefSound.mp3')
+    definitionSound = gTTS(definition, lang='en', tld='com')
+    definitionSound.save('DefSound.mp3')
 
 with open("score.txt", "r") as file:
     score = int(file.readline())
@@ -35,12 +35,15 @@ while (playing):
     keys = list(my_dict.keys())
     randomIndex = randint(0, len(keys) - 1)
     randomWord = (keys[randomIndex])
-    randomWordDefenition = my_dict[randomWord]
-    generate_speech_files(randomWord, randomWordDefenition)
+    randomWordDefinition = my_dict[randomWord]
+    generate_speech_files(randomWord, randomWordDefinition)
     opt = 0
 
+    with open("word_history.txt", "a") as file:
+        file.write(f"\n{randomWord}")
+
     while (opt != "4"):
-        print("\n1. Hear Word\n2. Hear Defenition\n3. See score\n4. Exit\n")
+        print("\n1. Hear Word\n2. Hear definition\n3. See score\n4. Exit\n")
         opt = str(input("Enter option or spell word: "))
 
         if (opt == "1"):
@@ -73,9 +76,9 @@ while (playing):
             else:
                 playing = False
 
+with open("score.txt", "w") as file:
+    file.write(str(score))
+
 pygame.quit()
 os.remove('WordSound.mp3')
 os.remove('DefSound.mp3')
-
-with open("score.txt", "w") as file:
-    file.write(str(score))
